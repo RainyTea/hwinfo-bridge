@@ -10,16 +10,16 @@ namespace HwInfoBridge;
 
 internal sealed class SensorMap
 {
-    public string? CpuUsage { get; set; }
-    public string? CpuTemp { get; set; }
-    public string? CpuWatts { get; set; }
-    public string? CpuCoreClock { get; set; }
-    public string? GpuUsage { get; set; }
-    public string? GpuTemp { get; set; }
-    public string? GpuWatts { get; set; }
-    public string? GpuCoreClock { get; set; }
-    public string? GpuMemoryAvailable { get; set; }
-    public string? GpuMemoryAllocated { get; set; }
+    public string? CpuUsage { get; set; } = "Total CPU Usage";
+    public string? CpuTemp { get; set; } = "CPU (Tctl/Tdie)";
+    public string? CpuWatts { get; set; } = "CPU Package Power";
+    public string? CpuCoreClock { get; set; } = "Core Clocks";
+    public string? GpuUsage { get; set; } = "GPU Core Load";
+    public string? GpuTemp { get; set; } = "GPU Temperature";
+    public string? GpuWatts { get; set; } = "GPU Power";
+    public string? GpuCoreClock { get; set; } = "GPU Clock";
+    public string? GpuMemoryAvailable { get; set; } = "GPU Memory Available";
+    public string? GpuMemoryAllocated { get; set; } = "GPU Memory Allocated";
 }
 
 internal sealed class Config
