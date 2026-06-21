@@ -9,6 +9,8 @@
     "gpuUsage": "GPU Core Load",
     "gpuTemp": "GPU Temperature",
     "gpuWatts": "GPU Power",
-    "gpuCoreClock": "GPU Clock"
+    "gpuCoreClock": "GPU Clock",
+    "gpuMemoryAvailable": "GPU Memory Available",
+    "gpuMemoryAllocated": "GPU Memory Allocated"
   }
 }

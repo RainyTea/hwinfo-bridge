@@ -18,6 +18,8 @@ internal sealed class SensorMap
     public string? GpuTemp { get; set; }
     public string? GpuWatts { get; set; }
     public string? GpuCoreClock { get; set; }
+    public string? GpuMemoryAvailable { get; set; }
+    public string? GpuMemoryAllocated { get; set; }
 }
 
 internal sealed class Config
@@ -43,6 +45,7 @@ internal sealed class GpuPayload
     [JsonPropertyName("temp")] public double? Temp { get; set; }
     [JsonPropertyName("watts")] public double? Watts { get; set; }
     [JsonPropertyName("coreClockMhz")] public double? CoreClockMhz { get; set; }
+    [JsonPropertyName("memory")] public MemoryPayload Memory { get; set; } = new();
 }
 
 internal sealed class MemoryPayload
@@ -202,6 +205,8 @@ internal static class Program
                 var (memTotalGb, memUsedGb) = ReadMemoryStatus();
                 var cpuW = Match(labels, s.CpuWatts);
                 var gpuW = Match(labels, s.GpuWatts);
+                var gpuMemAllocMb = Match(labels, s.GpuMemoryAllocated);
+                var gpuMemAvailMb = Match(labels, s.GpuMemoryAvailable);
 
                 _sensorsJson = JsonSerializer.Serialize(new SensorPayload
                 {
@@ -220,6 +225,13 @@ internal static class Program
                         Temp = Match(labels, s.GpuTemp),
                         Watts = gpuW,
                         CoreClockMhz = Match(labels, s.GpuCoreClock),
+                        Memory = new MemoryPayload
+                        {
+                            UsedGb = gpuMemAllocMb is null ? null : gpuMemAllocMb / 1024.0,
+                            TotalGb = (gpuMemAllocMb is null || gpuMemAvailMb is null)
+                                ? null
+                                : (gpuMemAllocMb + gpuMemAvailMb) / 1024.0,
+                        },
                     },
                     Memory = new MemoryPayload { TotalGb = memTotalGb, UsedGb = memUsedGb },
                     Storage = new StoragePayload { TotalGb = storageGb },

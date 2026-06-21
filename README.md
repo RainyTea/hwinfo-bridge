@@ -8,8 +8,33 @@ Works with **HWiNFO Free** (no Pro / shared memory required) — it reads the
 sensors HWiNFO writes to `HKCU\Software\HWiNFO64\VSB` when you enable its
 HWiNFO Gadget feature.
 
-Runs as a hidden background process — no console window, no tray icon. Stop
+Runs as a hidden background process, no console window, no tray icon. Stop
 it any time via Task Manager (`hwinfo-bridge.exe`).
+
+## Requirements
+
+The bridge has no built-in sensors of its own, it just exposes what HWiNFO is
+already reading. So you need:
+
+- **Windows 10 / 11**.
+- **[HWiNFO](https://www.hwinfo.com/download/)** running in the background.
+  The free *Sensors-only* build is fine.
+
+**Install HWiNFO:**
+
+1. Download the **Installer** (or portable build) of the Free version from
+   <https://www.hwinfo.com/download/>.
+2. Run the installer with default options.
+3. On first launch, tick **Sensors-only** so it skips the system summary
+   window and goes straight to the sensor list.
+4. Open HWiNFO's main settings (gear icon → **General / User Interface**) and
+   enable **Auto Start**, **Minimize Main Window on Startup**, and
+   **Minimize Sensors on Startup** so it launches hidden at login.
+5. Continue with the [one-time sensor setup](#one-time-hwinfo-setup) below to
+   tell HWiNFO which values to publish.
+
+If HWiNFO isn't running, every sensor field in `/sensors` returns `null` —
+the registry values it writes simply stop updating.
 
 ## Install (recommended)
 
@@ -69,8 +94,9 @@ fires it automatically.
    - **GPU Temperature**
    - **GPU Power**
    - **GPU Clock**
-4. Set the registry polling period to ~1000 ms.
-5. Apply / OK. HWiNFO must keep running in the background for fresh data.
+   - **GPU Memory Allocated**
+   - **GPU Memory Available**
+4. Apply / OK. HWiNFO must keep running in the background for fresh data.
 
 ## Customize sensor labels (optional)
 
@@ -90,7 +116,9 @@ matched case-insensitively against the labels HWiNFO writes to the registry:
     "gpuUsage": "GPU Core Load",
     "gpuTemp": "GPU Temperature",
     "gpuWatts": "GPU Power",
-    "gpuCoreClock": "GPU Clock"
+    "gpuCoreClock": "GPU Clock",
+    "gpuMemoryAvailable": "GPU Memory Available",
+    "gpuMemoryAllocated": "GPU Memory Allocated"
   }
 }
 ```
@@ -116,7 +144,8 @@ after editing config.
     "usage": 19,
     "temp": 33,
     "watts": 50,
-    "coreClockMhz": 2625
+    "coreClockMhz": 2625,
+    "memory": { "totalGb": 16, "usedGb": 5.14 }
   },
   "memory": { "totalGb": 32, "usedGb": 14.2 },
   "storage": { "totalGb": 4000 },
