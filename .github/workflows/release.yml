@@ -1,0 +1,46 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish (e.g. v0.1.0). Required for manual runs."
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Publish
+        run: dotnet publish HwInfoBridge.csproj -c Release -o publish
+
+      - name: Package
+        id: package
+        shell: pwsh
+        run: |
+          $tag = if ('${{ github.event_name }}' -eq 'workflow_dispatch') { '${{ inputs.tag }}' } else { '${{ github.ref_name }}' }
+          $zipName = "hwinfo-bridge-$tag.zip"
+          Compress-Archive -Path publish/* -DestinationPath $zipName -Force
+          "zip=$zipName" >> $env:GITHUB_OUTPUT
+          "tag=$tag"     >> $env:GITHUB_OUTPUT
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.package.outputs.tag }}
+          files: ${{ steps.package.outputs.zip }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true

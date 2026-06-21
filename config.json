@@ -1,0 +1,13 @@
+{
+  "port": 8765,
+  "pollMs": 1000,
+  "sensors": {
+    "cpuUsage": "Total CPU Usage",
+    "cpuTemp": "CPU (Tctl/Tdie)",
+    "cpuWatts": "CPU Package Power",
+    "cpuCoreClock": "Core Clocks",
+    "gpuUsage": "GPU Core Load",
+    "gpuTemp": "GPU Temperature",
+    "gpuWatts": "GPU Power"
+  }
+}
