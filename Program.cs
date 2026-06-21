@@ -93,16 +93,16 @@ internal static class Program
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
+    private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool GetPhysicallyInstalledSystemMemory(out ulong totalKb);
 
     [StructLayout(LayoutKind.Sequential)]
-    private sealed class MEMORYSTATUSEX
+    private struct MEMORYSTATUSEX
     {
-        public uint dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>();
+        public uint dwLength;
         public uint dwMemoryLoad;
         public ulong ullTotalPhys;
         public ulong ullAvailPhys;
@@ -316,8 +316,8 @@ internal static class Program
     // total minus available, so a 32 GB system reports 32 GB total instead of 31.9.
     private static (double? totalGb, double? usedGb) ReadMemoryStatus()
     {
-        var status = new MEMORYSTATUSEX();
-        var ok = GlobalMemoryStatusEx(status);
+        var status = new MEMORYSTATUSEX { dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>() };
+        var ok = GlobalMemoryStatusEx(ref status);
         double? total = GetPhysicallyInstalledSystemMemory(out var kb)
             ? kb / 1048576.0
             : (ok ? status.ullTotalPhys / 1073741824.0 : (double?)null);
