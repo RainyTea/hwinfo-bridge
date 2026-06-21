@@ -43,6 +43,18 @@ To uninstall, kill `hwinfo-bridge.exe` in Task Manager, run
 `%LOCALAPPDATA%\HwInfoBridge\hwinfo-bridge.exe --uninstall`, then delete the
 folder.
 
+## Restart after closing
+
+If you killed `hwinfo-bridge.exe` via Task Manager and want it back without
+rebooting, just relaunch the exe:
+
+- **Win+R**, paste `%LOCALAPPDATA%\HwInfoBridge\hwinfo-bridge.exe`, Enter.
+- **PowerShell:** `Start-Process "$env:LOCALAPPDATA\HwInfoBridge\hwinfo-bridge.exe"`
+- **cmd.exe:** `start "" "%LOCALAPPDATA%\HwInfoBridge\hwinfo-bridge.exe"`
+
+Or simply log out and back in - the autostart entry the installer registered
+fires it automatically.
+
 ## One-time HWiNFO setup
 
 1. Launch **HWiNFO64** and open the **Sensors** window.
@@ -56,6 +68,7 @@ folder.
    - **GPU Core Load**
    - **GPU Temperature**
    - **GPU Power**
+   - **GPU Clock**
 4. Set the registry polling period to ~1000 ms.
 5. Apply / OK. HWiNFO must keep running in the background for fresh data.
 
@@ -76,7 +89,8 @@ matched case-insensitively against the labels HWiNFO writes to the registry:
     "cpuCoreClock": "Core Clocks",
     "gpuUsage": "GPU Core Load",
     "gpuTemp": "GPU Temperature",
-    "gpuWatts": "GPU Power"
+    "gpuWatts": "GPU Power",
+    "gpuCoreClock": "GPU Clock"
   }
 }
 ```
@@ -101,7 +115,8 @@ after editing config.
     "name": "NVIDIA GeForce RTX 4070",
     "usage": 19,
     "temp": 33,
-    "watts": 50
+    "watts": 50,
+    "coreClockMhz": 2625
   },
   "memory": { "totalGb": 32, "usedGb": 14.2 },
   "storage": { "totalGb": 4000 },
@@ -111,30 +126,6 @@ after editing config.
 
 `system.watts` is the sum of `cpu.watts + gpu.watts`. If a field is missing,
 the wallpaper's System Codex hides that row.
-
-## Build from source
-
-Requires **.NET 8 SDK** (`dotnet --version` ≥ 8). From this folder:
-
-```powershell
-dotnet publish -c Release
-```
-
-The single-file exe lands in
-`bin\Release\net8.0-windows\win-x64\publish\hwinfo-bridge.exe` (~13 MB,
-trimmed + AOT-compatible JSON). Copy it + `config.json` anywhere and
-double-click to run.
-
-To cut a new GitHub Release (which the installer pulls from):
-
-```powershell
-git tag v0.1.0
-git push origin v0.1.0
-```
-
-The [.github/workflows/release.yml](.github/workflows/release.yml) workflow
-builds, zips and attaches `hwinfo-bridge-v0.1.0.zip` to the release
-automatically.
 
 ## Troubleshooting
 

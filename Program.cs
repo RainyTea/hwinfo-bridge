@@ -17,6 +17,7 @@ internal sealed class SensorMap
     public string? GpuUsage { get; set; }
     public string? GpuTemp { get; set; }
     public string? GpuWatts { get; set; }
+    public string? GpuCoreClock { get; set; }
 }
 
 internal sealed class Config
@@ -41,6 +42,7 @@ internal sealed class GpuPayload
     [JsonPropertyName("usage")] public double? Usage { get; set; }
     [JsonPropertyName("temp")] public double? Temp { get; set; }
     [JsonPropertyName("watts")] public double? Watts { get; set; }
+    [JsonPropertyName("coreClockMhz")] public double? CoreClockMhz { get; set; }
 }
 
 internal sealed class MemoryPayload
@@ -217,6 +219,7 @@ internal static class Program
                         Usage = Match(labels, s.GpuUsage),
                         Temp = Match(labels, s.GpuTemp),
                         Watts = gpuW,
+                        CoreClockMhz = Match(labels, s.GpuCoreClock),
                     },
                     Memory = new MemoryPayload { TotalGb = memTotalGb, UsedGb = memUsedGb },
                     Storage = new StoragePayload { TotalGb = storageGb },
